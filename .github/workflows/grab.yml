@@ -1,0 +1,33 @@
+name: 'Grab the latest Iosevka release'
+on:
+  push:
+    branches:
+      - actions
+  schedule:
+    - cron:  '* 0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/auto-cancel-redundant-job@v1
+      - uses: actions/checkout@v2
+
+      - name: Install downloader packages
+        run: |
+          cd scripts/downloader
+          npm install
+
+      - name: Download and commit fonts
+        run: |
+          cd scripts/downloader
+          npm start
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+          tags: true
+          force: true
+        if: always()

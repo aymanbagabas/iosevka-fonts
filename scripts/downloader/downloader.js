@@ -18,7 +18,7 @@ const octokit = new Octokit();
     repo: 'Iosevka'
   })
   // Releases are sorted by time, we reverse the order to make the latest release the latest commit in the repository
-  for (const release of releases.data.filter(r => !r.draft).reverse()) {
+  for (const release of releases.data.filter(r => !r.draft && !r.prerelease).reverse()) {
     console.log('\n', release.tag_name, '=============================\n\n')
     if (!repoTags.includes(release.tag_name)) {
       const zipAssets = release.assets
@@ -34,18 +34,18 @@ const octokit = new Octokit();
         // }
         // Download zip and extract
         downloads.push(
-          unzipper.Open.url(request, asset.browser_download_url).then(zip => {
-            console.log(dirName)
-            return zip.extract({
-              path: `../../dist/${dirName}`,
-              concurrency: 5
+          rmfr('../../dist', { glob: true }).catch().then(() => {
+            return unzipper.Open.url(request, asset.browser_download_url).then(zip => {
+              console.log(dirName)
+              return zip.extract({
+                path: `../../dist/${dirName}`,
+                concurrency: 5
+              })
             })
           })
         )
       }
       await Promise.all(downloads).then(() => {
-        return rmfr('../../dist/*/*.min.css', { glob: true }).catch()
-      }).then(() => {
         // Minify css
         return minify({
           compressor: cleanCSS,

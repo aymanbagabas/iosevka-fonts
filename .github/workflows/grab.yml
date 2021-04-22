@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: technote-space/auto-cancel-redundant-job@v1
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Install downloader packages
         run: |
@@ -23,11 +25,10 @@ jobs:
           cd scripts/downloader
           npm start
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: master
-          tags: true
-          force: true
+      - name: push changes to remote
+        run: |
+          git config --global user.name "Ayman Bagabas"
+          git config --global user.email "ayman.bagabas@gmail.com"
+          git tag -l | xargs -I{} git push origin {}
+          git push origin HEAD:master
         if: always()

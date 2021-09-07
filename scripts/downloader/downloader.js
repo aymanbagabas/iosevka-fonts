@@ -63,7 +63,7 @@ const octokit = new Octokit();
       await index.write();
       const oid = await index.writeTree();
       const parent = await repo.getHeadCommit();
-      const author = Git.Signature.now("Ayman Bagabas", "ayman.bagabas@gmail.com");
+      const author = Git.Signature.now("Iosevka-fonts[bot] 🤖", "actions@github.com");
       const committer = author
       const commitId = await repo.createCommit("HEAD", author, committer, msg, oid, [parent]);
       console.log(`Commit ID: ${commitId}`)

@@ -1,8 +1,6 @@
 name: 'Grab the latest Iosevka release'
 on:
   push:
-    branches:
-      - actions
   schedule:
     - cron:  '* 0 * * *'
 
@@ -27,8 +25,8 @@ jobs:
 
       - name: push changes to remote
         run: |
-          git config --global user.name "Ayman Bagabas"
-          git config --global user.email "ayman.bagabas@gmail.com"
+          git config --global user.name "Iosevka-fonts[bot] 🤖"
+          git config --global user.email "actions@github.com"
           git tag -l | xargs -I{} git push origin {}
           git push origin HEAD:master
         if: always()
